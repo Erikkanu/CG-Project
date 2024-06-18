@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,18 +6,29 @@ public class EnemyAI : MonoBehaviour
 {
     [SerializeField] float chaseRange = 5f;
     [SerializeField] float turnSpeed = 5f;
+    [SerializeField] float chaseDelay = 2f; // Adjust as needed
+    [SerializeField] float attackDelay = 1f; // Adjust as needed
 
     NavMeshAgent navMeshAgent;
     float distanceToTarget = Mathf.Infinity;
     bool isProvoked = false;
     EnemyHealth health;
     Transform target;
+    Animator animator;
+
+    Coroutine currentActionCoroutine; // Track the current coroutine action
 
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         health = GetComponent<EnemyHealth>();
-        target = FindObjectOfType<PlayerHealth>().transform;
+        target = FindObjectOfType<HealthManager>().transform;
+        animator = GetComponent<Animator>();
+
+        if (animator == null)
+        {
+            Debug.LogError("Animator component not found on " + gameObject.name);
+        }
     }
 
     void Update()
@@ -27,8 +37,11 @@ public class EnemyAI : MonoBehaviour
         {
             enabled = false;
             navMeshAgent.enabled = false;
+            return;
         }
+
         distanceToTarget = Vector3.Distance(target.position, transform.position);
+
         if (isProvoked)
         {
             EngageTarget();
@@ -36,38 +49,69 @@ public class EnemyAI : MonoBehaviour
         else if (distanceToTarget <= chaseRange)
         {
             isProvoked = true;
+            StartCoroutine(ChaseDelay());
         }
     }
 
-    public void OnDamageTaken()
+    IEnumerator ChaseDelay()
     {
-        isProvoked = true;
+        yield return new WaitForSeconds(chaseDelay);
+        if (isProvoked && distanceToTarget <= chaseRange)
+        {
+            EngageTarget();
+        }
     }
 
     private void EngageTarget()
     {
         FaceTarget();
+
         if (distanceToTarget >= navMeshAgent.stoppingDistance)
         {
-            ChaseTarget();
+            StartActionCoroutine(ChaseTarget());
         }
-
-        if (distanceToTarget <= navMeshAgent.stoppingDistance)
+        else if (distanceToTarget <= navMeshAgent.stoppingDistance)
         {
-            AttackTarget();
+            StartActionCoroutine(AttackTarget());
         }
     }
 
-    private void ChaseTarget()
+    void StartActionCoroutine(IEnumerator coroutine)
     {
-        GetComponent<Animator>().SetBool("attack", false);
-        GetComponent<Animator>().SetTrigger("move");
-        navMeshAgent.SetDestination(target.position);
+        // Stop any existing coroutine
+        if (currentActionCoroutine != null)
+        {
+            StopCoroutine(currentActionCoroutine);
+        }
+
+        // Start the new coroutine
+        currentActionCoroutine = StartCoroutine(coroutine);
     }
 
-    private void AttackTarget()
+    IEnumerator ChaseTarget()
     {
-        GetComponent<Animator>().SetBool("attack", true);
+        Debug.Log("Chasing target");
+        if (animator != null)
+        {
+            animator.SetBool("attack", false);
+            animator.SetTrigger("move");
+        }
+        navMeshAgent.SetDestination(target.position);
+
+        yield return new WaitForSeconds(chaseDelay); // Adjust delay as needed
+        EngageTarget(); // Resume engagement after delay
+    }
+
+    IEnumerator AttackTarget()
+    {
+        Debug.Log("Attacking target");
+        if (animator != null)
+        {
+            animator.SetBool("attack", true);
+        }
+
+        yield return new WaitForSeconds(attackDelay); // Adjust delay as needed
+        EngageTarget(); // Resume engagement after delay
     }
 
     private void FaceTarget()

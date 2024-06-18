@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HealthManager : MonoBehaviour
 {
@@ -20,8 +21,11 @@ public class HealthManager : MonoBehaviour
     {
         if (healthAmount <= 0)
         {
-            // Reload the current level if health reaches 0
-            Application.LoadLevel(Application.loadedLevel);
+            // Get the active scene
+            Scene currentScene = SceneManager.GetActiveScene();
+
+            // Reload the active scene
+            SceneManager.LoadScene(currentScene.name);
         }
 
         if (Input.GetKeyDown(KeyCode.Return))

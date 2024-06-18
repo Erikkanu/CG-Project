@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour
 {
-    PlayerHealth target;
+    HealthManager target;
     [SerializeField] float damage = 40f;
 
     void Start()
     {
-        target = FindObjectOfType<PlayerHealth>();
+        target = FindObjectOfType<HealthManager>();
     }
 
     public void AttackHitEvent()

@@ -23,6 +23,15 @@ public class ZombiesSpawner : MonoBehaviour
             // Instantiate theEnemy as a child of the Zombies GameObject
             GameObject newEnemy = Instantiate(theEnemy, new Vector3(xPos, yPos, zPos), Quaternion.identity);
             newEnemy.transform.parent = zombiesContainer.transform; // Set parent to Zombies GameObject
+            Animator animator = newEnemy.GetComponent<Animator>();
+            if (animator != null)
+            {
+                animator.SetBool("move", true);
+            }
+            else
+            {
+                Debug.LogWarning("Animator component not found on instantiated enemy.");
+            }
 
             yield return new WaitForSeconds(1f);
             enemyCount++;
