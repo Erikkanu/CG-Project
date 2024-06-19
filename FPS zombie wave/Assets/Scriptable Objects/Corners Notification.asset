@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6863ca65a1a67147943418a3855701f, type: 3}
   m_Name: Corners Notification
   m_EditorClassIdentifier: 
-  notificationMessage: 'Always check corners they may be right there...
+  notificationMessage: 'Always check corners, they may be right there...
 
 '
   removeAfterExit: 0

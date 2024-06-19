@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2749849550018276309, guid: e31b778073d0a0d4aabc1bb5d197db73, type: 3}
       propertyPath: m_Name
-      value: Rockets (1)
+      value: Rifle Ammo
       objectReference: {fileID: 0}
     - target: {fileID: 3468702025099270402, guid: e31b778073d0a0d4aabc1bb5d197db73, type: 3}
       propertyPath: m_Mesh
@@ -134,7 +134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4066606167210309835, guid: af93344c0aa436148a226df63a291bf7, type: 3}
       propertyPath: m_Name
-      value: RocketPickup
+      value: RiflePickup
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af93344c0aa436148a226df63a291bf7, type: 3}
@@ -152,7 +152,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2749849550018276309, guid: e31b778073d0a0d4aabc1bb5d197db73, type: 3}
       propertyPath: m_Name
-      value: Rockets
+      value: Rifle Ammo
       objectReference: {fileID: 0}
     - target: {fileID: 3468702025099270402, guid: e31b778073d0a0d4aabc1bb5d197db73, type: 3}
       propertyPath: m_Mesh

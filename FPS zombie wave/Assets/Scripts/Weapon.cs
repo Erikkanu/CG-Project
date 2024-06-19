@@ -81,7 +81,7 @@ public class Weapon : MonoBehaviour
         muzzleFlash.Play();
     }
 
-    void ProcessRaycast()
+    void ProcessRaycast() // Function to detect hits on enemies
     {
         RaycastHit hit;
         if (Physics.Raycast(FPCamera.transform.position, FPCamera.transform.forward, out hit, range))

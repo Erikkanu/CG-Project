@@ -7,14 +7,9 @@ public class WeaponSwitcher : MonoBehaviour
 {
     [SerializeField] int currentWeapon = 0;
 
-
     [SerializeField] AudioClip weaponSwitchSound;
 
-
     AudioSource audioSource;
-
-
-
     
     void Start()
     {

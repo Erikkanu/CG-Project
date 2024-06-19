@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1851806911319305082}
   - component: {fileID: 1012452060429678681}
   m_Layer: 0
-  m_Name: Shells
+  m_Name: Shotgun Shells
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

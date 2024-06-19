@@ -14,7 +14,7 @@ public class SceneLoader : MonoBehaviour
             QuitGame();
         }
     }
-    //Add more functionalities when you need more levels and main menu
+ 
     public void ReloadGame()
     {
         SceneManager.LoadScene("Game");
@@ -26,10 +26,10 @@ public class SceneLoader : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void LoadEndGame()
+    /*public void LoadEndGame()
     {
         SceneManager.LoadScene("End");
-    }
+    }*/
 
     public void QuitGame()
     {
