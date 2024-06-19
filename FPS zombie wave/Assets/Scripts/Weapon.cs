@@ -1,37 +1,107 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Weapon : MonoBehaviour
 {
-    public GameObject bulletPrefab;
-    public Transform bulletSpawn;
-    public float bulletVelocity = 30;
-    public float bulletPrefabLifeTime = 3f;
+    [SerializeField] Camera FPCamera;
+    [SerializeField] float range = 100f;
+    [SerializeField] float damage = 30f;
+    [SerializeField] float timeBetweenShots = 0.5f;
 
-    // Update is called once per frame
+
+    [SerializeField] ParticleSystem muzzleFlash;
+    [SerializeField] GameObject hitEffect;
+    [SerializeField] Ammo ammoSlot;
+    [SerializeField] AmmoType ammoType;
+    [SerializeField] TextMeshProUGUI ammoText;
+   
+    [SerializeField] AudioClip gunSound;
+    [SerializeField] AudioClip emptyGunSound;
+
+
+
+    AudioSource audioSource;
+    bool canShoot = true;
+
+
+    private void OnEnable()
+    {
+        canShoot = true;
+    }
+
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        
+    }
     void Update()
     {
-        // Left mouse click
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            FireWeapon();
+        DisplayAmmo();
+        if (Input.GetMouseButtonDown(0)&& canShoot==true)
+        { 
+            StartCoroutine(Shoot());
         }
     }
 
-    private void FireWeapon()
+    void DisplayAmmo()
     {
-        //Instantiate the bullet
-        GameObject bullet = Instantiate(bulletPrefab, bulletSpawn.position, bulletSpawn.rotation);
-        //Shoot the bullet
-        bullet.GetComponent<Rigidbody>().AddForce(bulletSpawn.forward.normalized * bulletVelocity, ForceMode.Impulse);
-        //Destroy the bullet after some time
-        StartCoroutine(DestroyBulletAfterTime(bullet, bulletPrefabLifeTime));
+        int currentAmmo = ammoSlot.GetCurrentAmmo(ammoType);
+        ammoText.text = currentAmmo.ToString();
     }
 
-    private IEnumerator DestroyBulletAfterTime(GameObject bullet, float bulletPrefabLifeTime)
+    IEnumerator Shoot()
     {
-        yield return new WaitForSeconds(bulletPrefabLifeTime);
-        Destroy(bullet);
+        canShoot = false;
+        if (ammoSlot.GetCurrentAmmo(ammoType) > 0)
+        {
+            PlayMuzzleFlash();
+            ProcessRaycast();
+            audioSource.PlayOneShot(gunSound);
+            ammoSlot.ReduceCurrentAmmo(ammoType);
+        }
+        else
+        {
+            PlayEmptyGunSound();
+        }
+        yield return new WaitForSeconds(timeBetweenShots);
+        canShoot = true;
+        
+    }
+
+    private void PlayEmptyGunSound()
+    {
+        audioSource.PlayOneShot(emptyGunSound);
+    }
+
+    void PlayMuzzleFlash()
+    {
+        muzzleFlash.Play();
+    }
+
+    void ProcessRaycast()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(FPCamera.transform.position, FPCamera.transform.forward, out hit, range))
+        {
+
+            CreateHitImpact(hit);
+            EnemyHealth target = hit.transform.GetComponent<EnemyHealth>();
+            if (target == null) { return; }
+            target.TakeDamage(damage);
+        }
+
+        else
+        {
+            return;
+        }
+    }
+
+    private void CreateHitImpact(RaycastHit hit)
+    {
+        GameObject impact = Instantiate(hitEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        Destroy(impact, 0.1f);
     }
 }
